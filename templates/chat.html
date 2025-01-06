@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='estilo_chat.css') }}">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div id="containerChat">
+        <h1 id="tituloSala">{{ sala }}</h1>
+        <ul id="mensagens"></ul>
+        <input id="mensagemInput" type="text" placeholder="Digite sua mensagem aqui" />
+        <button id="enviarBtn">Enviar</button>
+        <button id="sairBtn">Sair</button>
+    </div>
+    <script>
+        const socket = io();
+        const sala = "{{ sala }}";
+        const nome_usuario = "{{ nome }}";
+
+        socket.emit('entrar_sala', {nome_sala: sala, nome_usuario: nome_usuario});
+
+        document.getElementById('enviarBtn').addEventListener('click', function () {
+            const mensagem = document.getElementById('mensagemInput').value;
+            if (mensagem.trim() !== '') {
+                socket.emit('enviar_mensagem', { texto: mensagem, nome_sala: sala, nome_usuario: nome_usuario });
+                document.getElementById('mensagemInput').value = '';
+            }
+        });
+
+        socket.on('nova_mensagem', function (data) {
+            const listaMensagens = document.getElementById('mensagens');
+            const novaMensagem = document.createElement('li');
+            novaMensagem.textContent = data.texto;
+            listaMensagens.appendChild(novaMensagem);
+        });
+
+        function sairSala() {
+            socket.emit('sair_sala', {nome_sala: sala, nome_usuario: nome_usuario});
+            window.location.href = '/';
+        }
+
+        document.getElementById('sairBtn').addEventListener('click', sairSala);
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salas de Chat</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='estilo_inicio.css') }}">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Entrar na Sala de Chat</h1>
+    <div>
+        <button type="button" onclick="criarSala()">Criar uma Sala</button>
+    </div>
+    <br><br>
+    <form action="/chat" method="get">
+        <label>Nome:</label>
+        <input type="text" id="nomeInput" placeholder="Escolha um nome!" name="nome" required />
+        <div>
+            <label>Código da Sala:</label>
+            <input type="text" id="codigoSala" placeholder="Código da Sala" name="sala" required>
+            <button type="submit">Entrar na Sala</button>
+        </div>
+    </form>
+    <ul id="mensagens"></ul>
+    <script>
+        const socket = io();
+
+        socket.on('mensagem', function(data) {
+            const item = document.createElement('li');
+            item.textContent = data;
+            document.getElementById('mensagens').appendChild(item);
+        });
+
+        socket.on('sala_criada', function(data) {
+            document.getElementById('codigoSala').value = data.nome_sala;
+        });
+
+        function criarSala() {
+            socket.emit('criar_sala');
+        }
+    </script>
+</body>
+</html>
