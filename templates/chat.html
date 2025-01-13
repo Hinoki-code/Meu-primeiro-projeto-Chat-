@@ -55,13 +55,13 @@
           };
     
           reader.readAsDataURL(arquivo);
-          arquivoInput.value = ""; // Reseta o input de arquivos
+          arquivoInput.value = ""; 
         } else if (mensagem.trim() !== "") {
           socket.emit("enviar_mensagem", {
             nome_sala: sala,
             texto: mensagem,
           });
-          document.getElementById("mensagemInput").value = ""; // Limpa o input de mensagem
+          document.getElementById("mensagemInput").value = ""; 
         }
       });
     
